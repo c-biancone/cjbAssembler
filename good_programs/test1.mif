@@ -1,0 +1,48 @@
+-- Memory File
+-- This is Test Program 1 for Harvard with
+-- memory mapped I/O-Ps
+
+WIDTH = 8;
+DEPTH = 1024;
+
+ADDRESS_RADIX = HEX;	% Can be HEX, BIN or DEC %
+DATA_RADIX = BIN;	% Can be HEX, BIN or DEC %
+
+CONTENT BEGIN
+%		|Op|R|R|	%
+%		|Co|s|s|	%
+%		|de|d| |	%
+0	:	00011010; % SUB R2, R2; R2 = 0x0 %
+1	:	00101001; % INC R2, #1; R2 = 0x1 %
+2	:	01110110; % CPY R1, R2; R1 = 0x1 %
+3	:	00101010; % INC R2, #2; R2 = 0x3 %
+4	:	00000110; % ADD R1, R2; R1 = 0x4 %
+5	:	01111101; % CPY R3, R1; R3 = 0x4 %
+6	:	01101110; % OR  R3, R2; R3 = 0x7 %
+7	:	01001101; % XOR R3, R1; R3 = 0x3 %
+8	:	00111101; % DEC R3, #1; R3 = 0x2 %
+9	:	01010111; % AND R1, R3; R1 = 0x0 %
+A	:	11001110; % ST  R3, R2; DM[R2] = 0x2 %
+B	:	01010101; % ST MAoffset %
+C	:	11111100; % PUSH R3; TOS = 0x2 % 
+D	:	11001110; % ST  R3, R2; OP[R2] = 0x2 %
+E	:	11111111; % ST MAoffset %
+F	:	00101110; % INC R3, #2; R3 = 0x4 %
+10	:	10110010; % LD R3, R2; R3 = 0x2 %
+11	:	01010101; % LD MAoffset %
+12	:	10110010; % LD R3, R2; R3 = 0x1F %
+13	:	11111111; % LD MAoffset %
+14	:	11101100; % POP R3; % 
+15	:	01001111; % XOR R3, R3; R3 = 0x0; Z=1 %
+16	:	11010001; % JUMP if Z=1 %
+17	:	11110000; % JUMP JAoffset %
+18	:	0; %  %
+19	:	0; %  %
+1A	:	0; %  %
+1B	:	0; %  %
+1C	:	0; %  %
+1D	:	0; %  %
+1E	:	0; %  %
+1F	:	0; %  %
+[020..3FF]  :   00000000; %Fill the rest of the locations with 0%
+END;

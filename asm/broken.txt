@@ -1,0 +1,47 @@
+; Example broken program with syntax errors
+; Correct program output contained in good_programs folder
+; Chris Biancone, April 2022
+;-----------------------------------------------------------------------------------------------------------------------
+;	Assembler directives: (just placeholders because the assembler expects these)
+;-----------------------------------------------------------------------------------------------------------------------
+	.directives
+	;
+	.equ	constOne	0x1;
+	.equ	constTwo	0x2;
+	;
+	.enddirectives;
+;-----------------------------------------------------------------------------------------------------------------------
+;	Constant segment: (just placeholders because the assembler expects these)
+;-----------------------------------------------------------------------------------------------------------------------
+; These values are initialized in the locations at the end of the code segment.
+; For now, .word is the only constant initialization assembly directive.
+; After assembling the code, during the final run, the constant name is
+;   replaced with its location address in the program memory.
+	.constants;
+;
+	.word	firstConstWord	0xFFFF;
+	;
+	.endconstants;
+;-----------------------------------------------------------------------------------------------------------------------
+;	Code segment:
+;-----------------------------------------------------------------------------------------------------------------------
+	.code;
+
+	    SUB R2, R2;
+	    SUB R2, R2;
+	    CPY R4, R1;
+@Label1	INC R2, 0x2;
+        ADD R1, R2;
+        CPY R3, R1;
+	    OR  R3, R2;
+	    XOE R3, R1;
+	    DEC R3, 01;
+	    PUSH R3;
+	    POP R3;
+	    AND R2 R3;
+	    ST  R3, M[R2, 0x55];
+	    INC R3, #2;
+	    LD 	R3, M[R2, 0x55];
+	    JUMP Z, @Label1;
+
+	endcode;

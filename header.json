@@ -1,0 +1,1 @@
+"-- Program Memory Initialization File\n-- Created by cjbRISC_ASM\n\nWIDTH = 8;\nDEPTH = 1024;\n\nADDRESS_RADIX = HEX;  % Can be HEX, BIN, or DEC %\nDATA_RADIX = BIN; % Can be HEX, BIN, or DEC %\n\nCONTENT BEGIN\n%      |Op|R|R|      %\n%      |Co|s|s|      %\n%      |de|d| |      %\n\n"

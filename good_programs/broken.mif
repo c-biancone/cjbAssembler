@@ -1,0 +1,36 @@
+-- Program Memory Initialization File
+-- Created by cjbRISC_ASM
+
+WIDTH = 8;
+DEPTH = 1024;
+
+ADDRESS_RADIX = HEX;  % Can be HEX, BIN, or DEC %
+DATA_RADIX = BIN; % Can be HEX, BIN, or DEC %
+
+CONTENT BEGIN
+%      |Op|R|R|      %
+%      |Co|s|s|      %
+%      |de|d| |      %
+
+0000 : 00011010;  % SUB R2, R2; %
+0001 : 00011010;  % SUB R2, R2; %
+0002 : 01110101;  % CPY R1, R1; %
+0003 : 00101010;  % @Label1	INC R2, 0x2; %
+0004 : 00000110;  % ADD R1, R2; %
+0005 : 01111101;  % CPY R3, R1; %
+0006 : 01101110;  % OR  R3, R2; %
+0007 : 01001101;  % XOR R3, R1; %
+0008 : 00111101;  % DEC R3, 0x1; %
+0009 : 11111100;  % PUSH R3; %
+000a : 11101100;  % POP R3; %
+000b : 01011011;  % AND R2, R3; %
+000c : 11001110;  % ST  R3, M[R2, 0x55]; %
+000d : 01010101;
+000e : 00101110;  % INC R3, 0x2; %
+000f : 10111110;  % LD 	R3, M[R2, 0x55]; %
+0010 : 01010101;
+0011 : 11010001;  % JUMP Z, @Label1; %
+0012 : 11110001;
+
+[0013..03FF] : 00000000; % Fill the remaining locations with 0 %
+END;

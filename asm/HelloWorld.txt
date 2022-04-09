@@ -1,0 +1,132 @@
+; This is a "Hello, World!" program for cjbRISC Harvard CPU with memory mapped I/O-Ps
+; Calculates necessary values and prints in ASCII format to LEDs on FPGA.
+; Chris Biancone, November 2021
+;-----------------------------------------------------------------------------------------------------------------------
+;	Assembler directives: (just placeholders because the assembler expects these)
+;-----------------------------------------------------------------------------------------------------------------------
+	.directives;
+	;
+	.equ	constOne	0x1;
+	.equ	constTwo	0x2;
+	;
+	.enddirectives;
+;-----------------------------------------------------------------------------------------------------------------------
+;	Constant segment: (just placeholders because the assembler expects these)
+;-----------------------------------------------------------------------------------------------------------------------
+; These values are initialized in the locations at the end of the code segment.
+; For now, .word is the only constant initialization assembly directive.
+; After assembling the code, during the final run, the constant name is
+;   replaced with its location address in the program memory.
+	.constants;
+;
+	.word	firstConstWord	0xFFFF;
+	;
+	.endconstants;
+;-----------------------------------------------------------------------------------------------------------------------
+;	Code segment:
+;-----------------------------------------------------------------------------------------------------------------------
+	.code;
+
+; start with computing basic values and storing them for later use
+@start  INC R0, 0x3; R0 = 0x3
+        ST  R0, M[R3, 0x10]; DM[R3] = 0x3
+        CPY R1, R0; R1 = 0x3
+        INC R3, 0x1; R3 = 0x1
+
+        ADD R0, R1; R0 = 0x6
+        ST  R0, M[R3, 0x10]; DM[R3] = 0x6
+        CPY R1, R0; R1 = 0x6
+        INC R3, 0x1; R3 = 0x2
+
+        ADD R0, R1; R0 = 0xc
+        ST  R0, M[R3, 0x10]; DM[R3] = 0xc
+        CPY R1, R0; R1 = 0xc
+        INC R3, 0x1; R3 = 0x3
+
+        ADD R0, R1; R0 = 0x18
+        ST  R0, M[R3, 0x10]; DM[R3] = 0x18
+        CPY R1, R0; R1 = 0x18
+        XOR R3, R3; R3 = 0x0
+
+        ADD R0, R1; R0 = 0x30
+        ST  R0, M[R3, 0x14]; DM[R3] = 0x30
+
+        ADD R0, R1; R0 = 0x48
+
+; first ASCII value computed, store to the highest mem location to output to LEDs
+        ST  R0, M[R3, 0xFF]; OP[R3] = 0x48 = H
+        INC R3, 0x1; R3 = 0x1
+
+        ADD R0, R1; R0 = 0x60
+        LD  R2, M[R3, 0x10]; R2 = 0x6;
+        ADD R0, R2; R0 = 0x66
+        DEC R0, 0x1; R0 = 0x65
+        ST  R0, M[R3, 0xFF]; OP[R3] = 0x65 = e
+        INC R3, 0x1; R3 = 0x2
+
+        ADD R0, R2; R0 = 0x6B
+        INC R0, 0x1; R0 = 0x6C
+        ST  R0, M[R3, 0xFF]; OP[R3] = 0x6C = l
+
+; perform some extra calculations here to dwell on the l output
+; push value onto stack for quick access later
+        PUSH R0; TOS = 0x6C = l
+        XOR R3, R3; R3 = 0x0
+
+        LD 	R1, M[R3, 0x10]; R1 = 0x3
+        ADD R0, R1; R0 = 0x6F
+        INC R3, 0x2; R3 = 0x2
+        LD  R2, M[R3, 0x10]; R2 = 0xc
+        INC R3, 0x1; R3 = 0x3
+
+        ST  R0, M[R3, 0xFF]; OP[R3] = 0x6F = o
+        PUSH R0; TOS = 0x6F = o
+        XOR R3, R3; R3 = 0x0
+
+        LD 	R0, M[R3, 0x14]; R0 = 0x30
+        SUB R0, R1; R0 = 0x2D
+        DEC R0, 0x1; R0 = 0x2C
+        INC R3, 0x1; R3 = 0x1
+        ST  R0, M[R3, 0xFF]; OP[R3] = 0x2C = ,
+
+        SUB R0, R2; R0 = 0x20
+        INC R3, 0x2; R3 = 0x2
+        ST  R0, M[R3, 0xFF]; OP[R3] = 0x20 = " "
+
+        XOR R3, R3; R3 = 0x0
+        LD 	R0, M[R3, 0x14]; R0 = 0x30
+        ADD R0, R1; R0 = 0x33
+        ADD R0, R2; R0 = 0x3F
+        INC R3, 0x3; R3 = 0x3
+        LD  R1, M[R3, 0x10]; R1 = 0x18
+        ADD R0, R1; R0 = 0x57
+        ST  R0, M[R3, 0xFF]; OP[R3] = 0x57 = W
+
+; can start popping values off the stack for quick outputs
+        POP R0; R0 = 0x6F
+        ST 	R0, M[R3, 0xFF]; OP[R3] = 0x6F = o
+
+        INC R0, 0x3; R0 = 0x72
+        ST  R0, M[R3, 0xFF]; OP[R3] = 0x72 = r
+
+        POP R0; R0 = 0x6C
+        ST  R0, M[R3, 0xFF]; OP[R3] = 0x6C = l
+
+        DEC R0, 0x3; R0 = 0x69
+        DEC R0, 0x3; R0 = 0x66
+        DEC R0, 0x2; R0 = 0x64
+        ST  R0, M[R3, 0xFF]; OP[R3] = 0x64 = d
+
+        LD  R2, M[R3, 0x10]; R2 = 0x6
+        ADD R1, R2; R1 = 0x1E
+        INC R1, 0x3; R1 = 0x21
+        ST  R1, M[R3, 0xFF]; OP[R3] = 0x21 = !
+
+; reset to run again
+        XOR R0, R0; R0 = 0x0
+        XOR R1, R1; R1 = 0x0
+        XOR R2, R2; R2 = 0x0
+        XOR R3, R3; R3 = 0x0, Z = 1
+        JUMP Z, @start;
+
+    .endcode;
