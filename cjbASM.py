@@ -153,6 +153,7 @@ def main():
     verify_flags(correctFileSyntax.group(flags[2]), constants, "constant")
     verify_code(correctFileSyntax.group(flags[4]))
     assemble(sys.argv[2])
+    print("Assembly Successful!!")
 
 
 if __name__ == "__main__":
