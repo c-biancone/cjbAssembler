@@ -73,3 +73,19 @@ It first verifies the structure of the input code file, looking for certain asse
 The assembling step has been split into 2 loops, turning this into a 3-pass assembler. This was necessary to perform lookahead in the code section, to allow the JUMP instruction to jump forward and backward through the program to labels designated with a "@". The offset needed here is based on the CPU architecture as well as the number of instructions, and is calculated during the second assembly pass. Simpler instructions don't need these extra steps and have a simpler dictionary lookup and replacement process.
 
 If all is sucessful, the user is presented with their machine code in the directopry of their choosing.
+
+## Future 
+This stage of the project was done with a goal of keeping the code line count as close to 100 as possible, which I think as far as raw code goes, I got about as close as I could. <120 lines of raw code for a fully functional assembler is pretty good, though I needed a few tricks to hit that. In the future when integrating this into my cjbRISC repo I will more closely adhere to good coding practice for readability instead of minimizing line count. That way it will be more easily extensible in the future, like for when adding directive use cases, etc.
+
+
+<!-- CONTACT -->
+## Contact
+
+Chris Biancone - [email](chris.biancone@gmail.com)
+
+Project Link: [https://github.com/c-biancone/cjbAssembler](https://github.com/c-biancone/cjbAssembler)
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/chris-biancone
