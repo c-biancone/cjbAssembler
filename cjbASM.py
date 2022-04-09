@@ -69,6 +69,7 @@ def verify_code(group):
                 labels[lineList[0] + lineList[1]] = iLine  # store to grab line of code later
                 del lineList[0:2]  # remove label from line before reprocessing
             # try and match line to correct syntax for a type of assembly instruction
+            # looks for instruction, source/destination register, and source register or offset
             arithLogi = re.search(patterns["arithLogi"], line)
             incDec = re.search(patterns['incDec'], line)
             loadStore = re.search(patterns['loadStore'], line)
