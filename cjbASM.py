@@ -19,10 +19,12 @@ import sys, json, re
 from nltk.tokenize import word_tokenize as tokenize  # tokenizes words and punctuation - ideal for assembler
 from expressions import patterns  # local RegEx patterns dictionary for readability
 
+# this file needs access to json files as well as expressions.py for assembly
 flags = json.load(open('flags.json'))  # list
 regs = json.load(open('registers.json'))  # dict
 opCode = json.load(open('instructions.json'))  # dict
 header = json.load(open('header.json'))  # string
+# set up global lists and dictionaries for storing data to be accessed in multiple methods
 directives, constants, labels, code = dict(), dict(), dict(), dict()
 directiveFile, constantFile, opcode, codeFile = list(), list(), list(), list()
 
@@ -61,15 +63,15 @@ def verify_code(group):
         line = line.strip()  # leading and trailing whitespace
         comment = re.search(patterns['comment'], line)
         if not comment:
-            code[iLine] = dict()  # create multilevel dictionary sorted by code line
-            labeledCode = re.search(patterns['labeledLine'], line)  # loose code syntax check
+            code[iLine] = dict()  # create multilevel dictionary sorted by code line for different code attributes
+            labeledCode = re.search(patterns['labeledLine'], line)  # look for labels
             if labeledCode:  # label must occur before first jump instruction
                 lineList = tokenize(line)
                 code[iLine].update({'labeled': True, 'label': lineList[0] + lineList[1]})
                 labels[lineList[0] + lineList[1]] = iLine  # store to grab line of code later
                 del lineList[0:2]  # remove label from line before reprocessing
-            # try and match line to correct syntax for a type of assembly instruction
-            # looks for instruction, source/destination register, and source register or offset
+        # try and match line to correct syntax for a type of assembly instruction
+        # looks for instruction, source/destination register, and source register or offset
             arithLogi = re.search(patterns["arithLogi"], line)
             incDec = re.search(patterns['incDec'], line)
             loadStore = re.search(patterns['loadStore'], line)
@@ -80,7 +82,7 @@ def verify_code(group):
                     lineList = tokenize(line)
                 code[iLine].update({'inst': lineList[0], 'Rsd': lineList[1]})
                 codeFile.append(line)  # raw code line for comments in output file
-                if jump:  # different for conditional / unconditional
+                if jump:  # different for conditional (Z) / unconditional (U)
                     if lineList[1] == 'Z': code[iLine].update({'Rs': '01', 'type': 'jump', 'label': lineList[3] + lineList[4]})
                     else: code[iLine].update({'Rs': '00', 'type': 'jump', 'label': lineList[3] + lineList[4]})
                 elif pushPop:
@@ -121,6 +123,8 @@ def assemble(output):
             pc += 1
     pc = 0
     for line in code:  # this loop does the real assembly, replacing ASM w/ MC
+        # print <hex program line> : <4-bit opcode><2-bit source/destination reg><2-bit source reg>
+        #       optional 8-bit offset for JUMP, LOAD, STORE
         outFile.write(
             format(pc, '04x') + " : " + opCode[code[line]['inst']] + regs[code[line]['Rsd']] + code[line]['Rs'] +
             ";  % " + codeFile[line] + " %\n")

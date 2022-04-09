@@ -1,6 +1,7 @@
 import re
 import json
 
+# enable regex patterns to pull from json files, allows easy future changes
 flags = json.load(open('flags.json'))  # list
 regs = json.load(open('registers.json'))  # dict
 opCode = json.load(open('instructions.json'))  # dict
