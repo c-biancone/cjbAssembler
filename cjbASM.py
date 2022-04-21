@@ -130,9 +130,10 @@ def assemble(output):
             ";  % " + codeFile[line] + " %\n")
         if code[line]['type'] == 'jump':  # requires memory offset calculation based on cjbRISC architecture
             pc += 1
-            # TODO: check for matched label pairs before assembling
-            outFile.write(
-                format(pc, '04x') + " : " + format((1024 + labelPCs[code[line]['label']]) - pc, '08b')[-8:] + ";\n")
+            try:
+                outFile.write(
+                    format(pc, '04x') + " : " + format((1024 + labelPCs[code[line]['label']]) - pc, '08b')[-8:] + ";\n")
+            except: raise SyntaxError("JUMP label mismatch in code line " + str(line) + ": " + codeFile[line])
         elif code[line]['type'] == 'loadStore':
             pc += 1
             outFile.write(format(pc, '04x') + " : " + code[line]['memOffset'] + ";\n")
