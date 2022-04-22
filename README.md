@@ -16,6 +16,8 @@
   <br/>
     <a href="#about"><strong>Jump to About»</strong></a>
     <br />
+    <a href="#writing your own programs"><strong>How to write assembly»</strong></a>
+    <br />
     <br />
     <!-- <a href="https://github.com/github_username/repo_name">View Demo</a> -->
     ·
@@ -64,15 +66,41 @@ To get a local copy up and running follow these simple steps:
 
 
 # About
-I decided on this project so I could have full-stack development control over this Computer system, from CPU archiitecture itself all the way to the tools used to compile the software that runs on it.
+I decided on this project so I could have full-stack development control over this computer system, from the CPU architecture itself all the way up to the tools used to compile the software that runs on it.
 
 This assembler heavily relies on <a href="https://en.wikipedia.org/wiki/Regular_expression">Regular Expressions</a> to perform structure and syntax checking. These search patterns are stored in `expressions.py` for readability of the main code, since some of them are quite long. They also pull information from JSON dictionaries that contain information on the CPU register names and the operation codes it understands, so it will see if the programmer typed something other than what they were supposed to.
 
-It first verifies the structure of the input code file, looking for certain assembler flags in a certain order. If this passes, it moves on to checking the syntax of the assembler directives, code constants, and actual code line by line. It skips over whitespace and comment lines designated by a ";", and will throw a SyntaxError if something is incorrect. For some instructions like LOAD and STORE, it performs preprocessing of offsets needed by the CPU.
+## Method 
+The assembler first verifies the structure of the input code file, looking for certain assembler flags in a certain order. If this passes, it moves on to checking the syntax of the assembler directives, code constants, and actual code line by line; else, the assembler will say it could not parse the file. It skips over whitespace and comment lines designated by a ";", and will throw a SyntaxError if something is incorrect, with a printout of the line for easy debugging. For some instructions like LOAD and STORE, it performs preprocessing of offsets needed by the CPU. 
 
-The assembling step has been split into 2 loops, turning this into a 3-pass assembler. This was necessary to perform lookahead in the code section, to allow the JUMP instruction to jump forward and backward through the program to labels designated with a "@". The offset needed here is based on the CPU architecture as well as the number of instructions, and is calculated during the second assembly pass. Simpler instructions don't need these extra steps and have a simpler dictionary lookup and replacement process.
+The assembling step has been split into 2 loops, turning this into a 3-pass assembler. This was necessary to perform lookahead in the code section, to allow the JUMP instruction to jump forward and backward through the program to labels designated with a "@". The offset needed here is based on the CPU architecture as well as the number of machine code lines, and is calculated during the second assembly pass. Simpler instructions don't need these extra steps and have a simpler dictionary lookup and replacement process.
 
-If all is sucessful, the user is presented with their machine code in the directopry of their choosing.
+If all is successful, the user is presented with their machine code in the directory of their choosing.
+
+## Writing your own programs
+Good example programs are included in the <a href="https://github.com/c-biancone/cjbAssembler/tree/main/asm">/asm</a> directory in the form of HelloWorld.txt and neuralNetMult.txt. HelloWorld calculates the ASCII values needed to print out "Hello, World!" on the FPGA's LEDs, while neuralNetMult runs the multiplication algorithm used in a neural network also implemented on the FPGA. Following the syntax used in these programs is necessary for proper compiling.
+
+Generally, this is the format used in the assembly files:
+```
+; First line comment detailing program functionality
+; Author
+
+.directives;
+    .equ    <directive>  <hexValue>;\
+.enddirectives;
+
+.constants;
+    .word   <constantName>  <hexProgramMemoryLocation>;
+.endconstants;
+
+.code;
+ @label     <INST> <Rsd>, <Rs>; comment on values
+            <INC/DEC> <Rsd>, <hexIncrement>;
+            <LD/ST> <Rsd>, M[Rs, <hexOffset>];
+            <JUMP> <U/Z> <@label>;
+.endcode    
+```
+Additional comments can be inserted anywhere necessary. For more information on the architecture, available instructions, and functionality, please see <a href="https://github.com/c-biancone/cjbRISC/blob/main/README.md">this document</a>.
 
 ## Future 
 This stage of the project was done with a goal of keeping the code line count as close to 100 as possible, which I think as far as raw code goes, I got about as close as I could. <120 lines of raw code for a fully functional assembler is pretty good, though I needed a few tricks to hit that. In the future when integrating this into my cjbRISC repo I will more closely adhere to good coding practice for readability instead of minimizing line count. That way it will be more easily extensible in the future, like for when adding directive use cases, etc.
